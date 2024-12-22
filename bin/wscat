@@ -65,7 +65,7 @@ class Console extends EventEmitter {
     if (tty.isatty(1)) {
       this.clear();
 
-      if (programOptions.execute) color = type = '';
+      if (programOptions.execute.length) color = type = '';
       else if (!programOptions.color) color = '';
 
       this.stdout.write(color + type + msg + Console.Colors.Default + '\n');
@@ -169,7 +169,10 @@ program
   )
   .option(
     '-x, --execute <command>',
-    'execute command after connecting (--connect only)'
+    'execute command after connecting. Repeat to execute more than one ' +
+      '(--connect only)',
+    collect,
+    []
   )
   .parse(process.argv);
 
@@ -284,8 +287,10 @@ if (programOptions.listen) {
     const ws = new WebSocket(connectUrl, programOptions.subprotocol, options);
 
     ws.on('open', () => {
-      if (programOptions.execute) {
-        ws.send(programOptions.execute);
+      if (programOptions.execute.length) {
+        for (let i = 0; i < programOptions.execute.length; i++) {
+          ws.send(programOptions.execute[i]);
+        }
 
         if (programOptions.wait === '-1') return;
 
@@ -354,7 +359,7 @@ if (programOptions.listen) {
     });
 
     ws.on('close', (code, reason) => {
-      if (!programOptions.execute) {
+      if (!programOptions.execute.length) {
         wsConsole.print(
           Console.Types.Control,
           `Disconnected (code: ${code}, reason: "${reason}")`,
