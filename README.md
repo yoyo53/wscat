@@ -41,7 +41,7 @@ Options:
                                       (--connect only)
   -s, --subprotocol <protocol>        optional subprotocol. Repeat to specify more than one
                                       (default: [])
-  -w, --wait <seconds>                wait given seconds after executing command
+  -w, --wait <seconds>                wait given seconds after executing command (-1 to hold open)
   -x, --execute <command>             execute command after connecting (--connect only)
   -h, --help                          display help for command
 ```
